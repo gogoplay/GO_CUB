@@ -17,7 +17,7 @@ namespace MvcParentDirectory.Controllers
         // GET: ParentDirectories
         public ActionResult Index()
         {
-            return View(db.ParentDirectories.ToList());//
+            return View(db.ParentDirectories.ToList());
         }
 
         // GET: ParentDirectories/Details/5
