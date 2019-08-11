@@ -15,10 +15,46 @@ namespace MvcParentDirectory.Controllers
         private ParentDirectoryDBContext db = new ParentDirectoryDBContext();
 
         // GET: ParentDirectories
-        public ActionResult Index()
+        //   public actionresult index()
+        //{
+        //    return view(db.parentdirectories.tolist());
+        //}
+
+        // GET:ParentDirectories by searchString
+        public ActionResult Index(string searchString, string searchAddress)
         {
-            return View(db.ParentDirectories.ToList());
+            var parentDirectories = from m in db.ParentDirectories
+                                    select m;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                parentDirectories = parentDirectories.Where(s => s.Name.Contains(searchString));
+            }
+
+
+            if (!String.IsNullOrEmpty(searchAddress))
+            {
+                parentDirectories = parentDirectories.Where(x => x.Address.Contains(searchAddress));
+            }
+
+            return View(parentDirectories);
         }
+
+        // GET:ParentDirectories by id
+        //public ActionResult Index(string id)
+        //{
+        //    string searchString = id;
+        //    var parentDirectories = from m in db.ParentDirectories
+        //                            select m;
+
+        //    if (!String.IsNullOrEmpty(searchString))
+        //    {
+        //        parentDirectories = parentDirectories.Where(s => s.Name.Contains(searchString));
+        //    }
+
+        //    return View(parentDirectories);
+        //}
+
 
         // GET: ParentDirectories/Details/5
         public ActionResult Details(int? id)
