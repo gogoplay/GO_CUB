@@ -8,21 +8,35 @@ using System.Web;
 using System.Web.Mvc;
 using MvcParentDirectory.Models;
 
+using System.IO;
+using CrystalDecisions.CrystalReports.Engine;
+
 namespace MvcParentDirectory.Controllers
 {
     public class ParentDirectoriesController : Controller
     {
         private ParentDirectoryDBContext db = new ParentDirectoryDBContext();
 
-        // GET: ParentDirectories
-        //   public actionresult index()
-        //{
-        //    return view(db.parentdirectories.tolist());
-        //}
+        public static class GlobalVar
+        {
+            public static string g_searchString = string.Empty;
+            public static string g_searchAddress = string.Empty;
+            public static List<ParentDirectory> g_getParentList = new List<ParentDirectory>();
+        }
 
-        // GET:ParentDirectories by searchString
+            // GET: ParentDirectories
+            //   public actionresult index()
+            //{
+            //    return view(db.parentdirectories.tolist());
+            //}
+
+            // GET:ParentDirectories by searchString
         public ActionResult Index(string searchString, string searchAddress)
         {
+  
+            //System.Diagnostics.Debug.WriteLine("==============Index 1===========GsearchString=" + GlobalVar.g_searchString);
+            //System.Diagnostics.Debug.WriteLine("==============Index 3===========GsearchAddress=" + GlobalVar.g_searchAddress);
+
             var parentDirectories = from m in db.ParentDirectories
                                     select m;
 
@@ -35,25 +49,33 @@ namespace MvcParentDirectory.Controllers
             if (!String.IsNullOrEmpty(searchAddress))
             {
                 parentDirectories = parentDirectories.Where(x => x.Address.Contains(searchAddress));
+
             }
+  
+            GlobalVar.g_getParentList = parentDirectories.ToList();//畫面結果存入全域變數g_getParentList
 
             return View(parentDirectories);
         }
 
-        // GET:ParentDirectories by id
-        //public ActionResult Index(string id)
-        //{
-        //    string searchString = id;
-        //    var parentDirectories = from m in db.ParentDirectories
-        //                            select m;
+        public ActionResult ExportCustomers()
+        {
 
-        //    if (!String.IsNullOrEmpty(searchString))
-        //    {
-        //        parentDirectories = parentDirectories.Where(s => s.Name.Contains(searchString));
-        //    }
+            //System.Diagnostics.Debug.WriteLine("==============ExportCustomers start============");
 
-        //    return View(parentDirectories);
-        //}
+            ReportDocument rd = new ReportDocument();
+            rd.Load(Path.Combine(Server.MapPath("~/CReport"), "ParentDirectoryReport.rpt"));
+
+            rd.SetDataSource(GlobalVar.g_getParentList);//使用全域變數g_getParentList產出PDF檔
+
+            Response.Buffer = false;
+            Response.ClearContent();
+            Response.ClearHeaders();
+
+
+            Stream stream = rd.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
+            stream.Seek(0, SeekOrigin.Begin);
+            return File(stream, "application/pdf", "ParentList.pdf");
+        }
 
 
         // GET: ParentDirectories/Details/5

@@ -4,19 +4,11 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Parent Directory</h2>
+<h2>Index</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
-    @using (Html.BeginForm("Index", "ParentDirectories", FormMethod.Get))
-    //@using (Html.BeginForm())
-    {
-<p>
-    Name: @Html.TextBox("SearchString") Address: @Html.TextBox("searchAddress")
-    <input type="submit" value="Filter" />&nbsp<input onclick="location.href='@Url.Action("ExportCustomers")'" type="button" value="Report PDF" />
-    @*<div><a href="@Url.Action("ExportCustomers")">Report PDF</a></div>*@
-</p> 
-    }   
+    <div><a href="@Url.Action("ExportCustomers")"> Report PDF </a></div>
 </p>
 <table class="table">
     <tr>
