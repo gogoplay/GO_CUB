@@ -24,6 +24,7 @@ namespace MvcParentDirectory.Controllers
             public static List<ParentDirectory> g_getParentList = new List<ParentDirectory>();
         }
 
+            //test
             // GET: ParentDirectories
             //   public actionresult index()
             //{
